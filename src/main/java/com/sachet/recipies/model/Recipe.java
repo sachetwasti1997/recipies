@@ -2,6 +2,7 @@ package com.sachet.recipies.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Recipe {
@@ -36,6 +37,17 @@ public class Recipe {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Notes notes;
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "recipe")
+    private Set<Ingredient> ingredients;
+
+    @Enumerated(value = EnumType.STRING)
+    private Difficulty difficulty;
+
+    @JoinTable(name="recipe_category",
+                joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @ManyToMany
+    private Set<Category> categories;
 
     public Recipe() {
     }
@@ -118,5 +130,13 @@ public class Recipe {
 
     public void setNotes(Notes notes) {
         this.notes = notes;
+    }
+
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }
